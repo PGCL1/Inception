@@ -1,0 +1,28 @@
+---
+services:
+  nginx:
+    build:
+      context: ./requirements/nginx
+    ports:
+      - 443:443
+
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db:/var/lib/mysql
+      
+  wordpress:
+    build:
+      context: ./requirements/wordpress 
+    volumes:
+      - wp-files:/var/www/html
+
+volumes:
+  db:
+  wp-files:

@@ -1,0 +1,43 @@
+FROM alpine:3.21.2
+
+RUN apk add --no-cache \
+    php82 \
+    php82-fpm \
+    php82-mysqli \
+    php82-pdo \
+    php82-pdo_mysql \
+    php82-gd \
+    php82-xml \
+    php82-mbstring \
+    php82-curl \
+    php82-zip \
+    curl \
+    && mkdir -p /run/php
+
+RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && chmod +x wp-cli.phar \
+    && mv wp-cli.phar /usr/local/bin/wp
+
+# Set the working directory
+WORKDIR /var/www/html
+
+RUN ln -s /usr/bin/php82 /usr/bin/php
+
+# Download and extract WordPress
+RUN curl -O https://wordpress.org/latest.tar.gz \
+    && tar -xzf latest.tar.gz --strip-components=1 -C /var/www/html \
+    && rm latest.tar.gz
+
+# Copy PHP-FPM configuration
+COPY php-fpm.conf /etc/php82/php-fpm.conf
+COPY ./entrypoint.sh ./entrypoint.sh
+
+# Expose the PHP-FPM port
+EXPOSE 9000
+
+# Start PHP-FPM
+CMD ["php-fpm82", "--nodaemonize"]
+
+RUN chmod +x ./entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]
