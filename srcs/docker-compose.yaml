@@ -1,0 +1,62 @@
+---
+services:
+  mariadb:
+    container_name: mariadb
+    build:
+      context: ./requirements/mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - inception
+
+  nginx:
+    container_name: nginx 
+    build:
+      context: ./requirements/nginx
+    depends_on:
+      - wordpress
+    ports:
+      - 443:443
+    volumes:
+      - wp-files:/var/www/html
+    networks:
+      - inception
+      
+  wordpress:
+    container_name: wordpress 
+    build:
+      context: ./requirements/wordpress 
+    depends_on:
+      - mariadb
+    environment:
+      WORDPRESS_TITLE: ${WORDPRESS_TITLE}
+      WORDPRESS_ADMIN_USER: ${WORDPRESS_ADMIN_USER}
+      WORDPRESS_ADMIN_PASSWORD: ${WORDPRESS_ADMIN_PASSWORD}
+      WORDPRESS_ADMIN_EMAIL: ${WORDPRESS_ADMIN_EMAIL}
+    volumes:
+      - wp-files:/var/www/html
+    networks:
+      - inception
+
+networks:
+  inception:
+    driver: bridge
+
+volumes:
+  db:
+    driver: local
+    driver_opts: 
+      type: none
+      o: bind
+      device: ${HOME}/data/db
+  wp-files:
+    driver: local
+    driver_opts: 
+      type: none
+      o: bind
+      device: ${HOME}/data/wp-files

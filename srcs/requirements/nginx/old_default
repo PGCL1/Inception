@@ -1,0 +1,19 @@
+server {
+		listen 443 ssl;
+		listen [::]:443 ssl;
+		server www.glacroix.42.fr;
+
+		ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt
+				ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+		ssl_protocols TLSv1.2 TLSv1.3;
+
+		location / {
+				root /usr/share/nginx/html;
+				index index.html;
+		}
+
+		location / {
+				proxy_pass http://wordpress:9000;
+				autoindex on;
+		}
+}
