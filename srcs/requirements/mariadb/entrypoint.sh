@@ -15,10 +15,15 @@ chown -R mysql:mysql /var/lib/mysql /run/mysqld
 cd /var/lib/mysql
 
 # initalize database
-mariadb-install-db --user=mysql --datadir=/var/lib/mysql
+mariadb-install-db --user=mysql --skip-test-db --datadir=/var/lib/mysql
+cd /usr/
+
+sleep infinity
+
+# bind database with socket
+mariadbd-safe --user=mysql --bind-address="0.0.0.0" --verbose --datadir=/var/lib/mysql
 
 echo "mariadb database was successfully created"
 
-sleep infinity
 
 #/usr/bin/mariadbd

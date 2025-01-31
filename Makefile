@@ -1,24 +1,25 @@
 SHELL := /bin/sh
+DOCKER_FOLDER := srcs
 
-IMAGES = $(shell docker images -q)
-ACTIVE_CONTAINERS = $(shell docker ps -q)
+IMAGES = $(shell docker images -a -q)
 ALL_CONTAINERS = $(shell docker ps -a -q)
 
-all: 
-	@echo "These are your docker images <$(IMAGES)>"
-	@echo "These are your docker active containers <$(ACTIVE_CONTAINERS)>"
-	@echo "These are your docker containers <$(ALL_CONTAINERS)>"
+# rajoute un check si images = NULL ou ALLCONTAINERS= NULL
 
-build: 
-	@docker compose up -f srcs/docker-compose.yaml up -d build
+all: 
+	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml up -d --build
 
 remove:
-	@docker compose down
+	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml down 
 
 clean: #clean containers
-	@docker rm $(ACTIVE_CONTAINERS)
+	@docker stop $(ALL_CONTAINERS)
+	@docker rm $(ALL_CONTAINERS)
+	@docker rmi $(IMAGES)
 
 fclean: #clean all containers and images
+	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml down --volumes
+	@docker stop $(ALL_CONTAINERS)
 	@docker rm $(ALL_CONTAINERS)
 	@docker rmi $(IMAGES)
 
