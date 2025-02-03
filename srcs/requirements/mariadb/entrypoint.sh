@@ -2,6 +2,8 @@
 
 # create directories mariadb
 mkdir -p /var/lib/mysql /run/mysqld 
+touch /var/run/mysqld/mysqld.sock
+touch /var/run/mysqld/mysqld.pid
 
 if [ ! -d /var/lib/mysql ] && [ ! -d /run/mysqld ]; then
 		echo "Directories were not correctly created"
@@ -10,6 +12,9 @@ fi
 
 # change ownership to mysql user and group
 chown -R mysql:mysql /var/lib/mysql /run/mysqld
+chown -R mysql:mysql /var/run/mysqld/mysqld.sock
+chown -R mysql:mysql /var/run/mysqld/mysqld.pid
+chmod -R 755 /var/run/mysqld/mysqld.sock
 
 # set working dir
 cd /var/lib/mysql
