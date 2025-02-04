@@ -25,12 +25,6 @@ clean: # clean containers
 
 fclean: # clean all containers and images
 	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml down --volumes
-	@if [ -z "$(strip $(ALL_CONTAINERS))" ]; then \
-		echo "No containers have been launched"; \
-	else \
-		docker stop $(ALL_CONTAINERS); \
-		docker rm $(ALL_CONTAINERS); \
-	fi
 	@if [ -z "$(strip $(IMAGES))" ]; then \
 		echo "No images are present"; \
 	else \

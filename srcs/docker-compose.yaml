@@ -5,12 +5,28 @@ services:
     build:
       context: ./requirements/mariadb
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
     volumes:
       - db:/var/lib/mysql
+    networks:
+      - inception
+
+  wordpress:
+    container_name: wordpress 
+    build:
+      context: ./requirements/wordpress 
+    depends_on:
+      - mariadb
+    environment:
+      WP_TITLE: ${WP_TITLE}
+      WP_ADMIN_USER: ${WP_ADMIN_USER}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+    volumes:
+      - wp-files:/var/www/html
     networks:
       - inception
 
@@ -25,3 +41,9 @@ volumes:
       type: none
       o: bind
       device: ${HOME}/data/db
+  wp-files:
+    driver: local
+    driver_opts: 
+      type: none
+      o: bind
+      device: ${HOME}/data/wp-files

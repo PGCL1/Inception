@@ -1,47 +1,33 @@
 #!/bin/bash
 set -e
+
+mkdir -p /var/www/html
 cd /var/www/html
+mkdir -p /var/www/wordpress && chmod -R 755 /var/www/wordpress
 
-# Configure PHP-FPM on the first run
-if [ ! -e /etc/.firstrun ]; then
-    sed -i 's/listen = 127.0.0.1:9000/listen = 9000/g' /etc/php82/php-fpm.d/www.conf
-    touch /etc/.firstrun
+# Only install WordPress if not already installed.
+if [ ! -f wp-config.php ]; then
+  echo "Downloading WordPress core..."
+  wp core download --allow-root --path=/var/www/html
+
+  echo "Creating wp-config.php..."
+  wp config create --allow-root --path=/var/www/html \
+      --dbname="$MYSQL_DATABASE" \
+	  --dbuser="$MYSQL_ROOT_USER" \ 
+	  --dbpass="$MYSQL_ROOT_PASSWORD" \
+	  --dbhost="$MYSQL_HOST"
+
+  echo "Installing WordPress..."
+  wp core install --allow-root --path=/var/www/html \
+      --url="$WP_URL" \
+	  --title="$WP_TITLE" \
+      --admin_user="$WP_ADMIN_USER" \
+	  --admin_password="$WP_ADMIN_PASSWORD" \
+	  --admin_email="$WP_ADMIN_EMAIL"
+else
+  echo "WordPress already configured. Skipping installation."
 fi
 
-# On the first volume mount, download and configure WordPress
-if [ ! -e .firstmount ]; then
-    # Wait for MariaDB to be ready
-    mariadb-admin ping --protocol=tcp --host=mariadb -u "$MYSQL_USER" --password="$MYSQL_PASSWORD" --wait >/dev/null 2>/dev/null
+# Pass control to the CMD (PHP built-in server, for example)
+exec "$@"
 
-    # Check if WordPress is already installed
-    if [ ! -f wp-config.php ]; then
-        echo "Installing WordPress..."
-
-        # Download and configure WordPress
-        wp core download --allow-root || true
-        wp config create --allow-root \
-            --dbhost=mariadb \
-            --dbuser="$MYSQL_USER" \
-            --dbpass="$MYSQL_PASSWORD" \
-            --dbname="$MYSQL_DATABASE"
-        wp core install --allow-root \
-            --skip-email \
-            --url="$DOMAIN_NAME" \
-            --title="$WORDPRESS_TITLE" \
-            --admin_user="$WORDPRESS_ADMIN_USER" \
-            --admin_password="$WORDPRESS_ADMIN_PASSWORD" \
-            --admin_email="$WORDPRESS_ADMIN_EMAIL"
-
-        # Create a regular user if it doesn't already exist
-        if ! wp user get "$WORDPRESS_USER" --allow-root > /dev/null 2>&1; then
-            wp user create "$WORDPRESS_USER" "$WORDPRESS_EMAIL" --role=author --user_pass="$WORDPRESS_PASSWORD" --allow-root
-        fi
-    else
-        echo "WordPress is already installed."
-    fi
-    chmod o+w -R /var/www/html/wp-content
-    touch .firstmount
-fi
-
-# Start PHP-FPM
-exec /usr/sbin/php-fpm82 -F
