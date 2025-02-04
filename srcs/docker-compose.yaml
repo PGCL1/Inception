@@ -8,7 +8,6 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_HOST: ${MYSQL_HOST}
     volumes:
       - db:/var/lib/mysql
     networks:
