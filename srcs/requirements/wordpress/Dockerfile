@@ -1,4 +1,4 @@
-FROM alpine:3.21.2
+FROM alpine:3.20
 
 RUN apk add --no-cache \
   php php-common php-fpm \
@@ -12,10 +12,10 @@ RUN curl -L https://github.com/wp-cli/wp-cli/releases/download/v2.7.1/wp-cli-2.7
  && chmod +x /usr/local/bin/wp
 
 # Create a directory for Worpress and download Wordpress
-COPY ./entrypoint.sh ./entrypoint.sh 
-RUN chmod +x ./entrypoint.sh
+COPY ./entrypoint.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 9000
 
-ENTRYPOINT ["./entrypoint.sh"]
-
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
