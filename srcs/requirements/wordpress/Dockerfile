@@ -18,4 +18,6 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 9000
 
+CMD ["php-fpm83", "--nodaemonize"]
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

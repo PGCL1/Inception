@@ -24,12 +24,29 @@ services:
       WP_ADMIN_USER: ${WP_ADMIN_USER}
       WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
       WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      WP_USER: ${WP_USER}
+      WP_EMAIL: ${WP_EMAIL}
+      WP_PASSWORD: ${WP_PASSWORD}
       WP_DATABASE: ${WP_DATABASE}
       WP_URL: ${WP_URL}
     volumes:
       - wp-files:/var/www/html
     networks:
       - inception
+
+  nginx:
+    container_name: nginx 
+    build:
+      context: ./requirements/nginx
+    depends_on:
+      - wordpress
+    ports:
+      - 443:443
+    volumes:
+      - wp-files:/var/www/html
+    networks:
+      - inception
+      
 
 networks:
   inception:

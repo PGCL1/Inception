@@ -5,9 +5,9 @@ IMAGES = $(shell docker images -a -q)
 ALL_CONTAINERS = $(shell docker ps -a -q)
 
 all: 
-	@mkdir -p ${HOME}/data/db
-	@mkdir -p ${HOME}/data/wp-files
-	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml up -d --build
+	mkdir -p ${HOME}/data/db
+	mkdir -p ${HOME}/data/wp-files
+	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml up --build #-d --build
 
 remove:
 	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml down 
@@ -32,8 +32,8 @@ fclean: # clean all containers and images
 	else \
 		docker rmi $(IMAGES); \
 	fi
-	@rm -rf ${HOME}/data/db
-	@rm -rf ${HOME}/data/wp-files
+	rm -rf ${HOME}/data/db
+	rm -rf ${HOME}/data/wp-files
 
 
 re: fclean all
