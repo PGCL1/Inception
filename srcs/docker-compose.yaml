@@ -24,6 +24,8 @@ services:
       WP_ADMIN_USER: ${WP_ADMIN_USER}
       WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
       WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      WP_DATABASE: ${WP_DATABASE}
+      WP_URL: ${WP_URL}
     volumes:
       - wp-files:/var/www/html
     networks:

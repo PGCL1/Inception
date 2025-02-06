@@ -34,6 +34,7 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	echo "Executing initial SQL commands..." 2>/dev/stderr
     mariadb -u root --socket=/var/run/mysqld/mysqld.sock <<EOF
 CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
+CREATE USER IF NOT EXISTS '${MYSQL_ROOT_USER}'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
 GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_ROOT_USER}'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
 FLUSH PRIVILEGES;
 EOF
