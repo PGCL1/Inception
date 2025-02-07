@@ -27,7 +27,7 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 	  --title=$WP_TITLE \
       --admin_user=$WP_ADMIN_USER \
 	  --admin_password=$WP_ADMIN_PASSWORD \
-	  --admin_email=$WP_ADMIN_EMAIL
+	  --admin_email=$WP_ADMIN_EMAIL --skip-email
 
 cd /var/www/wordpress
 wp user create $WP_USER $WP_EMAIL --role='editor' --user_pass=$WP_PASSWORD
@@ -36,6 +36,7 @@ else
   echo "WordPress already configured. Skipping installation."
 fi
 
+sed -i "s/127.0.0.1/0.0.0.0/" /etc/php83/php-fpm.d/www.conf
 
 # Pass control to the CMD (PHP built-in server, for example)
 exec "$@"
