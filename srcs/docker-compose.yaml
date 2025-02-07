@@ -63,11 +63,11 @@ volumes:
     driver_opts: 
       type: none
       o: bind
-      device: ${HOME}/data/db
+      device: /home/glacroix/data/db
   wp-files:
     name: "wp-files"
     driver: local
     driver_opts: 
       type: none
       o: bind
-      device: ${HOME}/data/wp-files
+      device: /home/glacroix/data/wp-files
