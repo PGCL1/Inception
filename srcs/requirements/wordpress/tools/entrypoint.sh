@@ -20,10 +20,6 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 	  --dbpass=$WP_ADMIN_PASSWORD \
 	  --dbhost='mariadb' --allow-root
 
-sed -i "s/<?php/<?php\
-if (! isset(\$_SERVER['HTTP_HOST']) ) { \$_SERVER['HTTP_HOST'] = 'glacroix.42.fr';}\
-/" "$WORDPRESS_PATH/wp-config.php"
-
   echo "Installing WordPress..."
   wp core install --allow-root --path='/var/www/wordpress' \
       --url=$WP_URL \

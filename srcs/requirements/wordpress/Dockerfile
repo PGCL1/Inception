@@ -12,7 +12,7 @@ RUN curl -L https://github.com/wp-cli/wp-cli/releases/download/v2.7.1/wp-cli-2.7
  && chmod +x /usr/local/bin/wp
 
 # Create a directory for Worpress and download Wordpress
-COPY ./entrypoint.sh /usr/local/bin/
+COPY ./tools/entrypoint.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/entrypoint.sh
 

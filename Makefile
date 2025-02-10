@@ -3,27 +3,35 @@ DOCKER_FOLDER := srcs
 
 IMAGES = $(shell docker images -a -q)
 ALL_CONTAINERS = $(shell docker ps -a -q)
+ALL_VOLUMES = $(shell docker volume list -q)
 
 all: 
-	mkdir -p /home/glacroix/data/db
-	mkdir -p /home/glacroix/data/wp-files
-	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml up --build #-d --build
+	@mkdir -p /home/glacroix/data/db
+	@mkdir -p /home/glacroix/data/wp-files
+	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml up --build 
+
+echo:
+	@echo
+	@docker images -a
+	@echo "Active docker images are: " $(IMAGES)
+	@echo
+	@docker ps -a
+	@echo "All docker containers are: "$(ALL_CONTAINERS)
+	@echo
+	@docker volume list
+	@echo "All docker volumes are: "$(ALL_VOLUMES)
 
 remove:
 	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml down 
 
 clean: # clean containers
-	@if [ -z "$(strip $(ALL_CONTAINERS))" ]; then \
-		echo "No containers have been launched"; \
-	else \
-		docker stop $(ALL_CONTAINERS); \
-		docker rm $(ALL_CONTAINERS); \
-	fi
+	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml down --rmi all
 	@if [ -z "$(strip $(IMAGES))" ]; then \
 		echo "No images are present"; \
 	else \
 		docker rmi $(IMAGES); \
 	fi
+
 
 fclean: # clean all containers and images
 	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml down --volumes --rmi all --remove-orphans
