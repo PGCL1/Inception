@@ -26,12 +26,6 @@ remove:
 
 clean: # clean containers
 	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml down --rmi all
-	@if [ -z "$(strip $(IMAGES))" ]; then \
-		echo "No images are present"; \
-	else \
-		docker rmi $(IMAGES); \
-	fi
-
 
 fclean: # clean all containers and images
 	@docker compose -f $(DOCKER_FOLDER)/docker-compose.yaml down --volumes --rmi all --remove-orphans
